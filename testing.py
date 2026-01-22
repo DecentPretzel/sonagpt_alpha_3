@@ -21,34 +21,49 @@ import random
 #Create human-visible site template upon opening site
 @app.route("/")
 def index():
-    return render_template("Site.html", word="Yo.")
+    return render_template("Site.html", word="Hello world.")
 
 
 
-#Agreement Process
-@app.route("/get_agreement", methods=["POST"])
+#Master behavior function
+@app.route("/get_behavior", methods=["POST"])
+def get_behavior():
+    data = request.get_json()
+    opinion = data.get("opinion")
+    lull = data.get("lull")
+    age = data.get("age")
+    if opinion == "new": get_agreement()
+    else: agreement_ins = ""
+    if opinion == "old_conflicting": get_persuasion()
+
+
+
+#Determine agreement
 def get_agreement():
     normal_agreement_roll = random.randint(0, 100)
-    if normal_agreement_roll <= 65:
-        normal_agreement = True
-        return {"normal_agreement": normal_agreement}
+    if normal_agreement_roll <= 65: agreement_ins = ""
     else:
-        normal_agreement = False
-        agreement_level = random.randint(0, 99)
-    return jsonify({"normal_agreement": normal_agreement, "agreement_level": agreement_level})
+        agreement_level = random.choice([0, 25, 50, 75])
+        match agreement_level:
+            case 0: agreement_ins = "Have your character fully disagree with the opinion of the user's character."
+            case 25: agreement_ins = "Have your character mostly disagree with the opinion of the user's character."
+            case 50: agreement_ins = "Have your character half-agree with the opinion of the user's character."
+            case 75: agreement_ins = "Have your character mostly agree with the opinion of the user's character, but not fully."
+    return {"agreement_ins": agreement_ins}
 
-@app.route("/get_persuasion", methods=["POST"])
+
+
+#Determine persuasion
 def get_persuasion():
     persuasion_success = random.choice([True, False])
     if persuasion_success:
-        persuasion_level = random.randint(1, 100)
-        return jsonify({"persuasion_success": persuasion_success, "persuasion_level": persuasion_level})
-    return jsonify({"persuasion_success": persuasion_success})
+        persuasion_level = random.choice([25, 50, 75])
+        if persuasion_
 
 
 
-#Topic Change Process
-@app.route("/get_topic_change", methods=["POST"])
+
+#Determine topic change
 def get_topic_change():
     data = request.get_json()
     lull = data.get("lull")
