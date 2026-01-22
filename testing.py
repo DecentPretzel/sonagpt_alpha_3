@@ -32,10 +32,8 @@ def get_behavior():
     opinion = data.get("opinion")
     lull = data.get("lull")
     age = data.get("age")
-    if opinion == "new":
-        agreement_ins = get_agreement()["ins"]
-    elif opinion == "old_conflicting":
-        persuasion_ins = get_persuasion()["ins"]
+    if opinion == "new": agreement_ins = get_agreement()["ins"]
+    elif opinion == "old_conflicting": persuasion_ins = get_persuasion()["ins"]
     else:
         agreement_ins = ""
         persuasion_ins = ""
