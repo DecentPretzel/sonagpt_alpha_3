@@ -21,7 +21,12 @@ import random
 #Create human-visible site template upon opening site
 @app.route("/")
 def index():
-    return render_template("Site.html", word="Yo and 'sup.")
+    return render_template("Site.html", word="reminders.")
+
+
+@app.route("/get_reminders", methods=["POST"])
+def get_reminders():
+    return jsonify({"reminders": "For EVERY message, you MUST follow ALL of the following steps: 1) If the user's message includes narration and / or character dialogue, then in_character = True. Otherwise, in_character = False. 2) If the user's character just gave a subjective opinion (i.e., \"this is boring,\" \"you're being selfish,\" \"pineapple is good on pizza\"): a) If this is the first time your character has heard the opinion said, then opinion = \"new\". b)If your character has heard the opinion said before and they haven't fully agreed with it yet, then opinion = \"old_conflicting\". c) If your character has heard the opinion said before and they've already fully agreed with it, then opinion = \"\". 3) If the user's character did NOT give a subjective opinion in the most recent message, then opinion = \"\". 4) If the user's narration / dialogue ONLY consists of affirmation toward your character's last message, then only_affirmation = True. Otherwise, only_affirmation = False. 5) age = your character's age in years. If the character's age hasn’t been specified yet, make your best guess. 6) Call get_behavior with {\"in_character\": in_character, \"opinion\": opinion, \"lull\": lull, \"age\": age}. 7) For your current message, follow ALL instructions in get_behavior()[\"behavior_instructions\"]."})
 
 
 
@@ -29,9 +34,9 @@ def index():
 @app.route("/get_behavior", methods=["POST"])
 def get_behavior():
     data = request.get_json()
-    in_character = data.get("in_character")
+    in_character = bool(data.get("in_character"))
     opinion = data.get("opinion")
-    only_affirmation = data.get("only_affirmation")
+    only_affirmation = bool(data.get("only_affirmation"))
     age = data.get("age")
     if in_character:
         if opinion == "new": agreement_ins = get_agreement()["ins"]
